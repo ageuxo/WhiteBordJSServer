@@ -84,7 +84,7 @@ function handlePayload(clientId, payload) {
 }
 
 wss.on('listening', ()=>{
-  console.log(`Listening for connections on ${wss.address} ...`);
+  console.log(`Listening for connections on ${wss.options.host} ...`);
 })
 
 wss.on('connection', (ws)=>connection(ws));
