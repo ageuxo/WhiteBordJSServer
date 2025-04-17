@@ -1,6 +1,24 @@
 import { WebSocket, WebSocketServer } from "ws";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
-const wss = new WebSocketServer({port: 55455});
+const proxy = new HttpsProxyAgent("https://localhost:55455");
+proxy.on('connect', (res, socket, head) => {
+  console.log('Proxy connected:', res.statusCode);
+});
+proxy.on('error', (err) => {
+  console.error('Proxy error:', err);
+});
+proxy.on('timeout', () => {
+  console.error('Proxy timeout');
+});
+proxy.on('close', () => {
+  console.log('Proxy closed');
+});
+proxy.on('upgrade', (req, socket, head) => {
+  console.log('Proxy upgrade:', req.url);
+  socket.write(head);
+} );
+const wss = new WebSocketServer({server: proxy});
 
 const entities = [];
 let clientIdx = 0;
@@ -84,7 +102,7 @@ function handlePayload(clientId, payload) {
 }
 
 wss.on('listening', ()=>{
-  console.log(`Listening for connections on ${wss.options.host} ...`);
+  console.log(`Listening for connections on ${wss.options.server != null ? wss.options.server.address : wss.options.port} ...`);
 })
 
 wss.on('connection', (ws)=>connection(ws));
