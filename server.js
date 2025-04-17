@@ -1,8 +1,14 @@
+import * as https from "https";
 import { WebSocket, WebSocketServer } from "ws";
 import { HttpsProxyAgent } from "https-proxy-agent";
 
-const agent = new HttpsProxyAgent("https://ageuxo.org");
-const wss = new WebSocketServer({ agent });
+// const agent = new HttpsProxyAgent("https://ageuxo.org");
+// const server = https.createServer({
+//   agent: agent
+// });
+const wss = new WebSocketServer({port: 55455 });
+// server.listen(8080);
+console.log("Server started");
 
 const entities = [];
 let clientIdx = 0;
@@ -86,7 +92,7 @@ function handlePayload(clientId, payload) {
 }
 
 wss.on('listening', ()=>{
-  console.log(`Listening for connections on ${wss.options.server != null ? wss.options.server.address : wss.options.port} ...`);
+  console.log(`Listening for connections on ${wss.options.server != null ? JSON.stringify(wss.options.server.address()) : wss.options.port} ...`);
 })
 
 wss.on('connection', (ws)=>connection(ws));
