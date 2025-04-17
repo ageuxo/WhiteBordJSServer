@@ -6,6 +6,14 @@ const wss = new WebSocketServer({server });
 wss.on('headers', (headers, req) => {
   console.log(`headers: ${JSON.stringify(headers)}. Request: ${JSON.stringify(req)}`);
 });
+
+server.on('upgrade', (req, socket, head) => {
+  console.log(`Upgrade request: ${JSON.stringify(req.headers)}`);
+  wss.handleUpgrade(req, socket, head, (ws) => {
+    wss.emit('connection', ws, req);
+  });
+});
+
 server.listen(55455)
 console.log("Server started");
 
