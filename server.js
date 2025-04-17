@@ -1,24 +1,8 @@
 import { WebSocket, WebSocketServer } from "ws";
 import { HttpsProxyAgent } from "https-proxy-agent";
 
-const proxy = new HttpsProxyAgent("https://localhost:55455");
-proxy.on('connect', (res, socket, head) => {
-  console.log('Proxy connected:', res.statusCode);
-});
-proxy.on('error', (err) => {
-  console.error('Proxy error:', err);
-});
-proxy.on('timeout', () => {
-  console.error('Proxy timeout');
-});
-proxy.on('close', () => {
-  console.log('Proxy closed');
-});
-proxy.on('upgrade', (req, socket, head) => {
-  console.log('Proxy upgrade:', req.url);
-  socket.write(head);
-} );
-const wss = new WebSocketServer({server: proxy});
+const agent = new HttpsProxyAgent("https://ageuxo.org");
+const wss = new WebSocketServer({ agent });
 
 const entities = [];
 let clientIdx = 0;
