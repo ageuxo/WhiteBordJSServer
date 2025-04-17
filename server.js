@@ -1,10 +1,12 @@
 import { WebSocket, WebSocketServer } from "ws";
+import { createServer } from "http";
 
-
-const wss = new WebSocketServer({port: 55455 });
+const server = createServer();
+const wss = new WebSocketServer({server });
 wss.on('headers', (headers, req) => {
-  console.log(JSON.stringify(headers));
+  console.log(`headers: ${JSON.stringify(headers)}. Request: ${JSON.stringify(req)}`);
 });
+server.listen(55455)
 console.log("Server started");
 
 const entities = [];
