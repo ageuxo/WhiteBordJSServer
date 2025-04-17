@@ -2,6 +2,9 @@ import { WebSocket, WebSocketServer } from "ws";
 
 
 const wss = new WebSocketServer({port: 55455 });
+wss.on('headers', (headers, req) => {
+  console.log(JSON.stringify(headers));
+});
 console.log("Server started");
 
 const entities = [];
