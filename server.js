@@ -95,7 +95,7 @@ function handlePayload(clientId, payload) {
   console.log(`Handling payload from client ${clientId} with type: ${payload.type}.`);
   switch (payload.type) {
     case "add":
-      if (verifyPayloadFields(payload, "entity", "entity.id", "entity.type")) {
+      if (verifyPayloadFields(payload, "entity")) {
         logEntityPacket();
         addClientEntity(clientId, payload.entity);
       }
