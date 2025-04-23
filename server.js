@@ -125,5 +125,11 @@ function connection(ws) {
     handlePayload(client.id, JSON.parse(data));
   });
 
+  ws.on('close', function close(code, reason) {
+    console.log(`Client ${client.id} disconnected. Code: ${code}, reason: ${reason}`);
+    clients.splice(clients.indexOf(client), 1);
+    console.log(`Client ${client.id} removed from clients list`);
+  });
+
 }
 
