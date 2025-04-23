@@ -80,16 +80,35 @@ function addClientEntity(clientId, entity) {
   sendToClients(confirmAdd, clientId);
 }
 
+function syncEntitiesToClient(clientId) {
+  const payload = {
+    type: "sync",
+    entities: entities
+  }
+  sendToClients(payload, clientId);
+}
+
 function handlePayload(clientId, payload) {
+  console.log(`Handling payload from client ${clientId} with type: ${payload.type}.`);
   switch (payload.type) {
     case "add":
-      verifyPayloadFields(payload, "entity");
-      addClientEntity(clientId, payload.entity);
+      if (verifyPayloadFields(payload, "entity", "entity.id", "entity.type")) {
+        logEntityPacket();
+        addClientEntity(clientId, payload.entity);
+      }
       break;
-  
+    case "sync":
+      syncEntitiesToClient(clientId);
+      break;
     default:
       console.log(`Error handling payload from client ${clientId}: type is not recognized! type: ${payload.type}`);
       break;
+  }
+
+  function logEntityPacket() {
+    console.log(`Client ${clientId} sent entity payload with type ${payload.type}: \n
+        \t entityType: ${payload.entity.type} \n
+        \t entityId: ${payload.entity.id} \n`);
   }
 
   function verifyPayloadFields(payload, ...fields) {
@@ -99,7 +118,12 @@ function handlePayload(clientId, payload) {
         failed.push(field);
       }
     }
-    console.assert(failed.length == 0, 'Client %s Payload missing required fields: %s', clientId, JSON.stringify(payload, fields, 4));
+    if (failed.length > 0) {
+      console.log(`Client ${clientId} Payload missing required fields: ${JSON.stringify(payload, fields, 4)}`);
+      return false;
+    } else {
+      return true;
+    }
   }
 }
 
@@ -121,7 +145,6 @@ function connection(ws) {
   ws.on('error', console.error);
 
   ws.on('message', function message(data) {
-    console.log('received: %s', data);
     handlePayload(client.id, JSON.parse(data));
   });
 
