@@ -36,14 +36,18 @@ class Client {
   }
 
   send(payload) {
-    this.ws.send(payload);
+    if (this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(payload);
+    } else {
+      console.log(`Client ${this.id} is not open. Unable to send payload: ${payload.type}`);
+    }
   }
 }
 
 function sendToClients(payload, ...clientIds) {
   const jsonPayload = JSON.stringify(payload);
   for (const client of clients) {
-    if (isInside(client.id, clientIds) && client.ws.readyState === WebSocket.OPEN) {
+    if (isInside(client.id, clientIds)) {
       client.send(jsonPayload);
     }
   }
@@ -52,7 +56,7 @@ function sendToClients(payload, ...clientIds) {
 function sendToClientsExcept(payload, ...excludeClientIds) {
   const jsonPayload = JSON.stringify(payload);
   for (const client of clients) {
-    if (client.ws.readyState === WebSocket.OPEN && !isInside(client.id, excludeClientIds)) {
+    if (!isInside(client.id, excludeClientIds)) {
       client.send(jsonPayload);
     }
   }
