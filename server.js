@@ -3,17 +3,20 @@ import { createServer } from "http";
 
 const server = createServer();
 const wss = new WebSocketServer({server });
+
+/*
 wss.on('headers', (headers, req) => {
   console.log(`headers: ${JSON.stringify(headers)}. Request: ${JSON.stringify(req)}`);
 });
 
-/* server.on('request', (req, reply) => {
+server.on('request', (req, reply) => {
   console.log(`Got request: ${JSON.stringify(req)}, replied: ${JSON.stringify(reply)}`);
 });
 
 server.on('upgrade', (req, socket, head) => {
   console.log(`Upgrade request: ${JSON.stringify(req.headers)}`);
-}); */
+});
+*/
 
 server.on('error', (e)=> {
   console.error(e);
