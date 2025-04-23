@@ -122,7 +122,7 @@ function handlePayload(clientId, payload) {
       }
     }
     if (failed.length > 0) {
-      console.log(`Client ${clientId} Payload missing required fields: ${JSON.stringify(payload, fields, 4)}`);
+      console.log(`Client ${clientId} Payload missing required fields: ${JSON.stringify(failed)}. ${JSON.stringify(payload, null, 4)}`);
       return false;
     } else {
       return true;
